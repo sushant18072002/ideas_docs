@@ -35,20 +35,20 @@ gantt
     CI/CD Pipelines & Dev Environment  :p1b, after p1a, 7d
     Database Schema & Migrations       :p1c, after p1b, 10d
     Authentication & Security Layer    :crit, p1d, after p1c, 12d
-    ✅ MILESTONE: Secure Login Demo     :milestone, m1, after p1d, 0d
+    ✅ MILESTONE - Secure Login Demo     :milestone, m1, after p1d, 0d
 
     section Phase 2: Brand Dashboard (Wk 7-16)
     Design System & Component Library  :p2a, 2026-05-13, 14d
     Creator Explorer (AI Search)       :p2b, after p2a, 21d
     Campaign Kanban Board              :p2c, after p2b, 21d
     Drip Campaign Builder              :p2d, after p2c, 14d
-    ✅ MILESTONE: Dashboard Demo        :milestone, m2, after p2d, 0d
+    ✅ MILESTONE - Dashboard Demo        :milestone, m2, after p2d, 0d
 
     section Phase 3: Automation & AI (Wk 15-22)
     Web Scraping Engine (Stealth)      :p3a, 2026-07-15, 21d
     Automated Outreach Workers         :p3b, after p3a, 14d
     AI Personalization (RAG Pipeline)  :p3c, after p3a, 21d
-    ✅ MILESTONE: Automation Demo       :milestone, m3, after p3c, 0d
+    ✅ MILESTONE - Automation Demo       :milestone, m3, after p3c, 0d
 
     section Phase 4: Creator Mobile App (Wk 21-32)
     Mobile App Scaffold & Auth         :p4a, 2026-09-01, 14d
@@ -56,20 +56,20 @@ gantt
     Contests & Live Leaderboard        :p4c, after p4b, 21d
     Trend Analysis & AI Insights       :p4d, after p4b, 14d
     Contracts & PayPal Wallet          :p4e, after p4c, 14d
-    ✅ MILESTONE: Mobile App Demo       :milestone, m4, after p4e, 0d
+    ✅ MILESTONE - Mobile App Demo       :milestone, m4, after p4e, 0d
 
     section Phase 5: Integration & QA (Wk 33-38)
     End-to-End Full Integration Test   :p5a, 2026-11-24, 14d
     End-to-End Test Suite (30+ paths)  :p5b, after p5a, 14d
     Load Testing & Performance Tuning  :p5c, after p5b, 7d
     Security Audit (OWASP Top 10)      :p5d, after p5c, 7d
-    ✅ MILESTONE: Beta Launch Ready     :milestone, m5, after p5d, 0d
+    ✅ MILESTONE - Beta Launch Ready     :milestone, m5, after p5d, 0d
 
     section Phase 6: Beta & Stabilisation (Wk 39-42)
     Private Beta Launch (50 brands)    :p6a, 2027-01-12, 7d
     Bug Fixing & Stability Monitoring  :p6b, after p6a, 14d
     Knowledge Transfer & Handoff       :p6c, after p6b, 7d
-    ✅ MILESTONE: Project Sign-Off      :milestone, m6, after p6c, 0d
+    ✅ MILESTONE - Project Sign-Off      :milestone, m6, after p6c, 0d
 ```
 
 ---
