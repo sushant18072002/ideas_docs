@@ -24,7 +24,7 @@
 *   **Backend Pipeline:**
     1. Python FastAPI receives handle → calls Instagram Graph API to fetch the creator's profile bio, category tags, and audience demographics.
     2. Text is concatenated and embedded via OpenAI `text-embedding-3-small` (1536 dimensions).
-    3. Vector is queried against a Pinecone index using Cosine Similarity KNN (K=50).
+    3. Vector is queried against a pgvector index in PostgreSQL using Cosine Similarity (K=50).
     4. Results are filtered by `gmv_30_day > 0` to exclude inactive accounts.
     5. Paginated results returned to the Next.js frontend.
 *   **Cost:** ~$0.0001 per embedding call. Batch 100 new creators per minute during ingestion.
@@ -34,7 +34,7 @@
 |:---|:---|:---|:---|:---|
 | EC-01 | Query returns 0 results | `results.length === 0` | AI relaxes constraints by 15%; re-query | Toast: "No exact matches. Showing closest results." |
 | EC-02 | Creator handle not found for Lookalike | Instagram Graph API 404 | Abort | Modal: "We couldn't find @handle. Double-check the spelling." |
-| EC-03 | Pinecone timeout (>5s) | HTTP timeout | Retry 1x; fallback to PostgreSQL text search | Spinner → "Results loaded from backup index." |
+| EC-03 | pgvector timeout (>5s) | DB timeout | Retry 1x; fallback to standard text search | Spinner → "Results loaded from backup index." |
 
 ---
 
@@ -123,14 +123,14 @@
 *   **Implementation:** PostgreSQL materialized view `creator_feed_scores` refreshed every 15 minutes. Mobile app fetches via `GET /api/v1/creators/feed?page=X`.
 
 ### 2.4.2 In-App Native Contract Signing
-*Mapped to: [06 — DropBox Sign API](./06_ai_and_integrations.md#632-dropbox-sign-api-embedded-e-signatures) | Business Rule [FR contract pre-condition](./08_business_rules_and_rbac.md)*
+*Mapped to: [06 — Docuseal API](./06_ai_and_integrations.md#652-docuseal-api-self-hosted-e-signature) | Business Rule [FR contract pre-condition](./08_business_rules_and_rbac.md)*
 
 *   **Flow:**
     1. Brand creates a contract template (Node.js generates PDF with dynamic fields).
-    2. Node calls DropBox Sign → returns `claim_url`.
+    2. Node calls Docuseal → returns `slug`.
     3. Flutter opens `claim_url` in `webview_flutter` widget (full screen).
     4. Creator signs with finger on the touch canvas.
-    5. DropBox Sign fires webhook → Node.js stores signed PDF to S3 → updates `contracts.is_signed = true`, `contracts.signed_at = NOW()`.
+    5. Docuseal fires webhook → Node.js stores signed PDF to S3 → updates `contracts.is_signed = true`, `contracts.signed_at = NOW()`.
     6. SHA-256 hash of the PDF bytes is stored in `contracts.document_hash` for tamper-proof verification.
 *   **Edge Case EC-12:** User disconnects mid-signature upload → Flutter caches the signature attempt in local SQLite → Background retry on reconnection.
 

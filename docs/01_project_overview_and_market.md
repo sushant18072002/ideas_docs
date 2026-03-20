@@ -163,7 +163,7 @@ The **Euka-Plus** platform is a B2B2C (Business-to-Business-to-Creator) SaaS eco
 | R-001 | Technical | Instagram aggressively updates anti-bot protection or Graph API rate limits, breaking scrapers | HIGH | CRITICAL | Maintain 3 independent scraper strategies (Graph API-first, Playwright fallback, manual CSV import). Dedicate 1 engineer to "scraper health" monitoring. |
 | R-002 | Legal | GDPR violation from scraping EU creator data | MEDIUM | CRITICAL | Geo-fence all scraping to US/UK IPs only. Implement "Right to Erasure" endpoint. |
 | R-003 | Financial | Creator disputes payout amounts (ledger disagreement) | MEDIUM | HIGH | Immutable `ledger_transactions` table with append-only design. No `UPDATE` or `DELETE` allowed; only corrective `INSERT` entries. |
-| R-004 | Operational | Residential proxy provider rate-limits or terminates service | MEDIUM | HIGH | Maintain contracts with 2+ proxy providers (BrightData + Smartproxy) and implement automatic failover. |
+| R-004 | Operational | Datacenter/Residential proxy provider rate-limits or terminates service | MEDIUM | HIGH | Maintain contracts with 2+ proxy providers (Webshare + IPRoyal) and implement automatic failover. |
 | R-005 | Market | Instagram launches a native, free affiliate CRM | LOW | CRITICAL | Differentiate on omnichannel value proposition — no single platform will build tools for their competitors. |
 
 ---

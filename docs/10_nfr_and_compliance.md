@@ -68,12 +68,12 @@ This document specifies the system's quality attributes beyond its functional be
 
 | Component | Tool | Purpose |
 |:---|:---|:---|
-| APM (Application Performance Monitoring) | Datadog or New Relic | Trace every request end-to-end across Node.js ↔ Python microservices |
-| Log Aggregation | AWS CloudWatch Logs → Datadog | Centralized searchable logs |
-| Error Tracking | Sentry | Capture unhandled exceptions in Next.js, NestJS, Flutter |
+| APM (Application Performance Monitoring) | OpenTelemetry + Grafana | Trace every request end-to-end across Node.js ↔ Python microservices |
+| Log Aggregation | AWS CloudWatch Logs | Centralized searchable logs |
+| Error Tracking | GlitchTip (Self-hosted) | Capture unhandled exceptions in Next.js, NestJS, Flutter |
 | Uptime Monitoring | Betteruptime or Pingdom | External health checks every 30s; PagerDuty alerts |
 | Database Monitoring | AWS RDS Performance Insights | Slow query detection, connection pool exhaustion alerts |
-| Redis Monitoring | Redis Commander + Datadog | Queue depth, memory usage, eviction rates |
+| Redis Monitoring | Redis Commander + Grafana | Queue depth, memory usage, eviction rates |
 | Custom Dashboards | Grafana | Business KPIs: Active Campaigns, DMs Sent, Revenue Processed |
 
 ### Alerting Severity Levels

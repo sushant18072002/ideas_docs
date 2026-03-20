@@ -21,7 +21,7 @@
 *   **DB Tables:** `users`
 *   **RBAC:** Only `SUPERADMIN` can invite. *(See [RBAC Matrix](./08_business_rules_and_rbac.md#brand-dashboard-permissions))*
 *   **Acceptance Criteria:**
-    *   **AC1:** *Given* settings page, *When* SuperAdmin enters an email + selects role (`MEMBER` or `VIEWER`), *Then* email invitation sent via [SendGrid](./09_notifications_and_emails.md) with magic link.
+    *   **AC1:** *Given* settings page, *When* SuperAdmin enters an email + selects role (`MEMBER` or `VIEWER`), *Then* email invitation sent via [Amazon SES](./09_notifications_and_emails.md) with magic link.
     *   **AC2:** *When* invitee clicks link, *Then* redirected to password-set form → `user` row created with `brand_id` and selected `role`.
     *   **AC3:** *Given* a `VIEWER` role user logs in, *Then* all "Create", "Delete", and "Edit" buttons are hidden per RBAC matrix.
 
@@ -41,7 +41,7 @@
 ### Story 2.2: Lookalike Vector Search
 *   **API:** `POST /api/v1/creators/lookalike`
 *   **Acceptance Criteria:**
-    *   **AC1:** *Given* Explorer page, *When* Brand types `@topCreator` in the Lookalike input, *Then* system embeds profile → queries Pinecone → returns top 50 similar creators.
+    *   **AC1:** *Given* Explorer page, *When* Brand types `@topCreator` in the Lookalike input, *Then* system embeds profile → queries pgvector → returns top 50 similar creators.
     *   **AC2:** *When* handle not found (API 404), *Then* modal: "We couldn't find @topCreator. Double-check the spelling."
 
 ### Story 2.3: Bulk Add to Campaign
@@ -118,9 +118,9 @@
 
 ### Story 5.1: In-App E-Signature
 *   **Screen:** Flutter full-screen WebView
-*   **API Integration:** [DropBox Sign](./06_ai_and_integrations.md#632-dropbox-sign-api-embedded-e-signatures)
+*   **API Integration:** [Docuseal](./06_ai_and_integrations.md#652-docuseal-api-self-hosted-e-signature)
 *   **Acceptance Criteria:**
-    *   **AC1:** *Given* Brand offers Usage Rights deal, *Then* Node generates PDF → DropBox Sign returns `claim_url` → Flutter opens in `webview_flutter`.
+    *   **AC1:** *Given* Brand offers Usage Rights deal, *Then* Node generates PDF → Docuseal API returns `slug` → Flutter opens `embed_url`.
     *   **AC2:** *When* Creator signs, *Then* DropBox webhook fires → `contracts.is_signed = true` → PDF stored in S3 → SHA-256 hash saved in `contracts.document_hash`.
     *   **AC3 [Disconnect]:** *When* Creator loses internet mid-signature, *Then* Flutter caches locally (SQLite) → background retry on reconnection.
 

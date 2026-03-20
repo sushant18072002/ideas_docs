@@ -15,7 +15,7 @@ sequenceDiagram
     participant AI as euka-ai (FastAPI)
     participant IG as Instagram Graph API
     participant OAI as OpenAI API
-    participant PC as Pinecone
+    participant PG as pgvector (PostgreSQL)
     
     W->>AI: Generate DM for creator_id=X, campaign_id=Y
     AI->>IG: GET creator profile (bio, recent Reels)
@@ -23,7 +23,7 @@ sequenceDiagram
     AI->>AI: Download top 3 video audio (FFmpeg)
     AI->>OAI: POST /v1/audio/transcriptions (Whisper)
     OAI-->>AI: Transcript text
-    AI->>PC: Upsert embedding (text-embedding-3-small)
+    AI->>PG: Upsert embedding (text-embedding-3-small)
     AI->>OAI: POST /v1/chat/completions (with context)
     OAI-->>AI: Generated DM text
     AI-->>W: Return personalized DM string
@@ -141,11 +141,11 @@ CONTEXT_OPTIONS = {
 ### 6.4.3 Proxy Architecture
 | Layer | Provider | Purpose | Monthly Cost |
 |:---|:---|:---|:---|
-| Primary | BrightData Residential | All scraping + DM sending | ~$500/mo (5GB) |
-| Fallback | Smartproxy | Auto-failover if BrightData quota exceeded | ~$300/mo (3GB) |
+| Primary | Webshare | All scraping + DM sending | ~$15-30/mo |
+| Fallback | IPRoyal / AsdlProxy | Auto-failover if Webshare quota exceeded | ~$15/mo |
 | Development | Free datacenter proxies | Local testing only (blocked by production platforms) | $0 |
 
-*   **Failover Logic:** If BrightData returns 407 (Proxy Auth Failed) or connection timeout, `ProxyManager` class auto-switches all active workers to Smartproxy endpoint within 30 seconds.
+*   **Failover Logic:** If Webshare returns 407 (Proxy Auth Failed) or connection timeout, `ProxyManager` class auto-switches all active workers to IPRoyal endpoint within 30 seconds.
 
 ---
 
@@ -176,25 +176,25 @@ Content-Type: application/json
 ```
 **Response:** `201 Created` → `batch_header.payout_batch_id` saved to `ledger_transactions.paypal_payout_item_id`.
 
-### 6.5.2 DropBox Sign API (Embedded E-Signature)
+### 6.5.2 Docuseal API (Self-Hosted E-Signature)
 *Powers: Feature [2.4.2](./02_core_features.md) | Story [5.1](./04_user_stories.md)*
 
 ```http
-POST https://api.hellosign.com/v3/signature_request/create_embedded
-Authorization: Basic {api_key_base64}
+POST https://docuseal.eukaplus.com/api/submissions
+Authorization: Bearer {DOCUSEAL_API_KEY}
 
 {
-  "client_id": "{DROPBOX_SIGN_CLIENT_ID}",
-  "title": "Usage Rights Agreement — {brand.name} x @{creator.handle}",
-  "subject": "Contract for {campaign.title}",
-  "signers": [
-    { "email_address": "{creator.email}", "name": "{creator.name}", "role": "Creator" }
-  ],
-  "file_url": ["{s3_presigned_url_to_contract_pdf}"],
-  "signing_options": { "draw": true, "type": true, "upload": false, "phone": false }
+  "template_id": "{DOCUSEAL_TEMPLATE_ID}",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "{creator.email}",
+      "role": "Creator"
+    }
+  ]
 }
 ```
-**Response:** `200 OK` → `signature_request.signatures[0].signature_id` → used to generate `claim_url` for Flutter WebView.
+**Response:** `200 OK` → `[0].slug` → used to generate `embed_url` for Flutter WebView.
 
 ### 6.5.3 EasyPost Tracking Webhook
 *Powers: Feature [2.3.2 — Logistics](./02_core_features.md) | Notification [P-003, P-004, P-005](./09_notifications_and_emails.md)*

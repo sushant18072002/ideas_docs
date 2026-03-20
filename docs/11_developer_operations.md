@@ -23,29 +23,26 @@
 | `PAYPAL_CLIENT_ID` | `...` | ✅ | PayPal Payouts API |
 | `PAYPAL_CLIENT_SECRET` | `...` | ✅ | PayPal Payouts API |
 | `PAYPAL_MODE` | `live` | ✅ | `sandbox` or `live` |
-| `DROPBOX_SIGN_API_KEY` | `...` | ✅ | E-signature API |
-| `DROPBOX_SIGN_CLIENT_ID` | `...` | ✅ | Embedded signing client |
+| `DOCUSEAL_API_KEY` | `...` | ✅ | Self-hosted E-signature API |
+| `DOCUSEAL_TEMPLATE_ID` | `...` | ✅ | Template ID for contracts |
 | `EASYPOST_API_KEY` | `...` | ✅ | Shipping tracker API |
 | `EASYPOST_WEBHOOK_SECRET` | `...` | ✅ | Webhook HMAC verification |
-| `SENDGRID_API_KEY` | `SG.xxx` | ✅ | Transactional email |
-| `SENDGRID_FROM_EMAIL` | `noreply@eukaplus.com` | ✅ | |
+| `AWS_SES_SENDER_EMAIL` | `noreply@eukaplus.com` | ✅ | Amazon SES verified sender |
 | `GOOGLE_MAPS_API_KEY` | `AIza...` | ✅ | Address validation |
 | `AWS_S3_BUCKET` | `euka-prod-contracts` | ✅ | Contract/media storage |
 | `AWS_REGION` | `us-east-1` | ✅ | |
 | `SHOPIFY_API_KEY` | `...` | ❌ | Per-brand OAuth; stored in `brands` table |
-| `SENTRY_DSN` | `https://...@sentry.io/...` | ✅ | Error tracking |
+| `GLITCHTIP_DSN` | `https://...@glitchtip.eukaplus.com/...` | ✅ | Error tracking |
 | `CORS_ORIGINS` | `https://app.eukaplus.com,https://creators.eukaplus.com` | ✅ | Comma-separated |
 
 ### `euka-scraper` / `euka-outreach` / `euka-ai` (Python)
 | Variable | Example Value | Required | Description |
 |:---|:---|:---:|:---|
-| `BRIGHTDATA_PROXY_URL` | `http://user:pass@brd.superproxy.io:22225` | ✅ | Primary residential proxy |
-| `SMARTPROXY_URL` | `http://user:pass@gate.smartproxy.com:7000` | ✅ | Fallback proxy |
+| `WEBSHARE_PROXY_URL` | `http://user:pass@p.webshare.io:80` | ✅ | Primary proxy pool |
+| `IPROYAL_PROXY_URL` | `http://user:pass@geo.iproyal.com:12321` | ✅ | Fallback proxy pool |
 | `OPENAI_API_KEY` | `sk-...` | ✅ | GPT-4o, Whisper, Embeddings |
-| `PINECONE_API_KEY` | `...` | ✅ | Vector DB |
-| `PINECONE_INDEX_NAME` | `euka-creators` | ✅ | |
 | `REDIS_URL` | `redis://elasticache-host:6379` | ✅ | Celery broker |
-| `DATABASE_URL` | `postgresql://...` | ✅ | Direct DB reads for scraper |
+| `DATABASE_URL` | `postgresql://...` | ✅ | Shared DB access (including pgvector) |
 
 ### `euka-mobile` (Flutter — Build-time constants)
 | Constant | Value | Description |
@@ -153,7 +150,7 @@ Every API error returns a structured JSON body. Frontend maps `error_code` to us
 | `PAYPAL_PAYOUT_FAILED` | 502 | "Payment provider error. Please retry." | Queue for retry; alert on-call |
 | `STRIPE_CARD_DECLINED` | 402 | "Card declined: [reason]" | Show Stripe decline reason |
 | `OPENAI_SERVICE_ERROR` | 503 | "AI is busy. Try again in a moment." | Retry 1x; show fallback |
-| `PINECONE_TIMEOUT` | 504 | "Search temporarily unavailable." | Fallback to PostgreSQL text search |
+| `PGVECTOR_TIMEOUT` | 504 | "Search temporarily unavailable." | Fallback to standard text search |
 
 ---
 

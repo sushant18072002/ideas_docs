@@ -220,15 +220,15 @@ The strategy during development is to **minimise spend** by using free tiers, sa
 | **AWS (Dev/Staging)** | RDS `db.t3.micro` (free tier 12 mo) + ElastiCache `cache.t3.micro` + t3.micro ECS | ₹3,500 | ₹33,250 | AWS Free Tier covers first 12 months of RDS. ECS Fargate charged per vCPU-hour. Dev = single AZ, no Multi-AZ redundancy |
 | **Vercel** | Free plan (Hobby) | ₹0 | ₹0 | Unlimited deploys; 100GB bandwidth; sufficient for staging |
 | **OpenAI API** | Pay-as-you-go; `gpt-4o-mini` | ₹1,500 | ₹14,250 | Low volume during dev — only used when testing AI features. ~₹12/1000 DMs |
-| **Pinecone (Vector DB)** | Starter plan (free) | ₹0 | ₹0 | Free tier: 1 index, 100k vectors — enough for dev |
-| **BrightData Proxies** | Micro plan for testing | ₹4,200 | ₹39,900 | Only needed during Phase 3 (scraper dev). ~$50/mo micro plan |
-| **Smartproxy (Fallback)** | Not needed during dev | ₹0 | ₹0 | Only activate for production |
-| **SendGrid (Email)** | Free plan (100 emails/day) | ₹0 | ₹0 | More than enough for dev/staging |
-| **DropBox Sign API** | Test mode (free) | ₹0 | ₹0 | Test mode allows unlimited sandbox signatures |
+| **Pinecone (Vector DB)** | Starter plan (free) | ₹0 | ₹0 | N/A (Switching to pgvector on existing RDS) |
+| **Webshare Proxies** | Base plan for testing | ₹1,200 | ₹11,400 | Replaces BrightData for scraper dev |
+| **IPRoyal (Fallback)** | Not needed during dev | ₹0 | ₹0 | Only activate for production |
+| **Amazon SES (Email)** | AWS Free Tier (62k/mo) | ₹0 | ₹0 | Replaces SendGrid |
+| **Docuseal API** | Self-hosted Docker (free) | ₹0 | ₹0 | Runs on existing ECS cluster (replaces DropBox Sign) |
 | **EasyPost (Shipping)** | Test mode (free) | ₹0 | ₹0 | Test environment; no real shipments |
 | **PayPal Payouts** | Sandbox (free) | ₹0 | ₹0 | Full sandbox available; no real money moved during dev |
 | **Stripe** | Test mode (free) | ₹0 | ₹0 | No charges on test keys |
-| **Sentry (Error Tracking)** | Developer plan (free) | ₹0 | ₹0 | Free: 5k events/month — sufficient for dev |
+| **GlitchTip (Error Tracking)** | Self-hosted (free) | ₹0 | ₹0 | Runs on existing ECS cluster (replaces Sentry) |
 | **GitHub** | Free for private repos | ₹0 | ₹0 | GitHub Actions: 2000 mins/month free |
 | **Firebase (Push Notifications)** | Free tier (FCM) | ₹0 | ₹0 | FCM is free for unlimited push notifications |
 | **Google Maps API** | $200/month free credit | ₹0 | ₹0 | Free credit covers ~28k geocode calls/month |
@@ -239,9 +239,9 @@ The strategy during development is to **minimise spend** by using free tiers, sa
 | **Apple Developer Account** | Annual | ₹8,500 | ₹8,500 | Required for TestFlight + App Store (one-time annual) |
 | **Google Play Developer** | Lifetime | ₹2,100 | ₹2,100 | One-time registration fee (₹2,100 / $25) |
 | | | | | |
-| **Monthly Recurring (During Dev)** | | **~₹9,200/mo** | | |
+| **Monthly Recurring (During Dev)** | | **~₹6,200/mo** | | |
 | **One-Time Costs** | | | **₹11,600** | Domain + Apple + Google |
-| **TOTAL (Dev Phase — 9.5 Months)** | | | **~₹98,900** | |
+| **TOTAL (Dev Phase — 9.5 Months)** | | | **~₹70,500** | |
 
 ### Production Phase (Weeks 39–42+): Full Infrastructure
 
@@ -249,25 +249,24 @@ The strategy during development is to **minimise spend** by using free tiers, sa
 
 | Service | Production Plan | Monthly Cost (₹) | Notes |
 |:---|:---|:---:|:---|
-| AWS (Production Multi-AZ) | RDS `db.r6g.large` Multi-AZ + ElastiCache cluster + ECS Fargate (3 services) | ₹35,000 | Multi-AZ for high availability |
-| Vercel Pro | Pro plan | ₹1,700 | Unlimited bandwidth, analytics |
+| AWS (Production Multi-AZ) | RDS `db.r6g.large` Multi-AZ + ElastiCache cluster + ECS Fargate | ₹35,000 | Multi-AZ for high availability |
+| Vercel | Hobby Plan (until 100GB limit) | ₹0 | Upgrade to Pro (₹1,700) only when traffic spikes |
 | OpenAI API | At scale (10k DMs/month) | ₹9,200 | See [06 — Cost Model](./06_ai_and_integrations.md#613-token-cost-model) |
-| Pinecone | Standard plan | ₹5,900 | Production index with replicas |
-| BrightData Proxies | 5GB Residential | ₹42,000 | ~$500/mo |
-| Smartproxy (Failover) | 3GB Residential | ₹25,000 | ~$300/mo |
-| SendGrid | Pro (100k emails/mo) | ₹7,500 | |
-| DropBox Sign API | Premium | ₹12,500 | ~$150/mo |
-| Sentry | Team plan | ₹2,200 | |
-| Datadog (Monitoring) | Pro | ₹8,400 | |
-| Cloudflare Pro | Pro plan | ₹1,700 | Advanced WAF + analytics |
-| **TOTAL (Monthly Post-Launch)** | | **~₹1,51,100/mo** | |
+| pgvector (Vector DB) | PostgreSQL Extension | ₹0 | Replaces Pinecone (runs on existing RDS) |
+| Webshare / Proxy-Cheap | 100-250 Datacenter / 5GB Res | ₹3,000 | Replaces BrightData |
+| IPRoyal / AsdlProxy | Fallback proxy pool | ₹1,500 | Replaces Smartproxy |
+| Amazon SES | 100k emails/mo | ₹850 | First 62k free via EC2/ECS. Replaces SendGrid |
+| Docuseal API | Self-hosted Docker container | ₹0 | Runs on existing ECS. Replaces DropBox Sign |
+| GlitchTip & Grafana | Self-hosted observability | ₹0 | Runs on existing ECS. Replaces Sentry/Datadog |
+| Cloudflare | Free plan | ₹0 | Sufficient for initial launch |
+| **TOTAL (Monthly Post-Launch)** | | **~₹49,550/mo** | |
 
 ### Cost Summary
 | Period | Duration | Total Estimated Cost (₹) |
 |:---|:---|:---:|
-| **Development Phase** (minimal infra) | Weeks 1–38 (~9.5 months) | **~₹98,900** |
-| **Production Phase** (full infra) | Weeks 39–42 (1 month) | **~₹1,51,100** |
-| **Grand Total (Infrastructure Only)** | 42 weeks | **~₹2,50,000** |
+| **Development Phase** (minimal infra) | Weeks 1–38 (~9.5 months) | **~₹70,500** |
+| **Production Phase** (full infra) | Weeks 39–42 (1 month) | **~₹49,550** |
+| **Grand Total (Infrastructure Only)** | 42 weeks | **~₹1,20,050** |
 
 > **Note:** All costs are approximate and based on March 2026 pricing at ₹84/USD. Actual costs may vary by 10-15% depending on usage patterns. Manpower cost is excluded and will be discussed separately.
 
@@ -309,7 +308,7 @@ The strategy during development is to **minimise spend** by using free tiers, sa
 |:---|:---|:---|:---|:---|
 | S4-01 | Build design system (theme, typography, components) | Frontend | Component library | Storybook deployed |
 | S4-02 | Explorer Search page per [Screen 7.3](./07_screen_specifications.md) | Frontend + Backend | Explorer page | All filters work; < 800ms latency |
-| S5-01 | Lookalike Vector Search (Pinecone) | Data Engineer | Lookalike API | Top 50 similar creators returned |
+| S5-01 | Lookalike Vector Search (pgvector) | Data Engineer | Lookalike API | Top 50 similar creators returned |
 | S6-01 | Kanban Board per [Screen 7.4](./07_screen_specifications.md) | Frontend | Kanban page | Drag-drop with optimistic UI + rollback |
 | S6-02 | Creator Side Panel (profile, history, notes) | Frontend | Panel component | Auto-saves notes on blur |
 | S7-01 | State transition validation per [State Machine 8.2](./08_business_rules_and_rbac.md) | Backend | Transition API | Invalid transitions return 422 |
@@ -335,7 +334,7 @@ The strategy during development is to **minimise spend** by using free tiers, sa
 | S13-01 | Contest Leaderboard per [Screen 7.8](./07_screen_specifications.md) | Mobile + Backend | Contests tab | Real-time WebSocket updates |
 | S13-02 | Trends + AI Analysis per [Screen 7.10](./07_screen_specifications.md) | Mobile + Data Engineer | Trends tab | LLM call with caching |
 | S14-01 | My Work tab per [Screen 7.9](./07_screen_specifications.md) | Mobile | My Work tab | All 4 sub-tabs with empty/loaded states |
-| S15-01 | In-App E-Signature per [06 — DropBox Sign](./06_ai_and_integrations.md) | Mobile + Backend | Contract flow | Webhook updates DB; PDF hashed |
+| S15-01 | In-App E-Signature per [06 — Docuseal](./06_ai_and_integrations.md) | Mobile + Backend | Contract flow | Webhook updates DB; PDF hashed |
 | S16-01 | PayPal Wallet per [FR-001 to FR-008](./08_business_rules_and_rbac.md) | Mobile + Backend | Wallet screen | All 4 ACs from [Story 4.2](./04_user_stories.md) pass |
 | S16-02 | Push notification system + deep links | Mobile + Backend | Notification system | All push types from [09 — Notifications](./09_notifications_and_emails.md) verified |
 

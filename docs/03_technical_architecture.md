@@ -33,15 +33,15 @@ graph TD
         PG[("PostgreSQL 16<br/>(AWS RDS Multi-AZ)")]
         RD[("Redis 7<br/>(AWS ElastiCache)")]
         S3[("AWS S3<br/>Contracts, Media")]
-        PC[("Pinecone<br/>Vector Index")]
+        PC[("pgvector<br/>(within PostgreSQL)")]
     end
 
     subgraph "3rd Party Services"
         IG["Instagram Graph API"]
         YT["YouTube Data API"]
         PP["PayPal Payouts API"]
-        DS["DropBox Sign API"]
-        SG["SendGrid Email API"]
+        DS["Docuseal (Self-Hosted on ECS)"]
+        SES["Amazon SES"]
         EP["EasyPost Shipping API"]
         OAI["OpenAI API"]
         GMP["Google Maps API"]
@@ -68,7 +68,7 @@ graph TD
     PY1 <--> IG
     PY1 <--> YT
     PY1 <--> PC
-    PY2 <--> SG
+    PY2 <--> SES
     PY2 <--> IG
     PY3 <--> OAI
 
@@ -192,7 +192,7 @@ graph TD
 | `type` | ENUM('COLLAB_AGREEMENT','USAGE_RIGHTS','RETAINER_AGREEMENT') | | — | |
 | `document_url` | VARCHAR(500) | | — | S3 URL |
 | `document_hash` | VARCHAR(64) | | — | SHA-256 hex digest for tamper-proof verification |
-| `dropbox_sign_request_id` | VARCHAR(255) | | — | External tracking |
+| `docuseal_request_id` | VARCHAR(255) | | — | External tracking |
 | `is_signed` | BOOLEAN | DEFAULT FALSE | — | Flipped by webhook |
 | `signed_at` | TIMESTAMPTZ | NULLABLE | — | |
 
@@ -324,7 +324,7 @@ graph TD
 | POST | `/api/v1/trends/:id/ai-analysis` | euka-ai | Creator | LLM trend insight | Feature [2.4.4](./02_core_features.md) |
 | POST | `/api/v1/payouts/withdraw` | euka-api | Creator | PayPal payout | Screen [7.11](./07_screen_specifications.md) |
 | POST | `/api/webhooks/easypost` | euka-api | Webhook | Carrier status | Feature [2.3.2](./02_core_features.md) |
-| POST | `/api/webhooks/dropbox-sign` | euka-api | Webhook | E-signature events | Feature [2.4.2](./02_core_features.md) |
+| POST | `/api/webhooks/docuseal` | euka-api | Webhook | E-signature events | Feature [2.4.2](./02_core_features.md) |
 | POST | `/api/webhooks/paypal` | euka-api | Webhook | Payout confirmation | Rule [FR-001](./08_business_rules_and_rbac.md) |
 | POST | `/api/webhooks/stripe` | euka-api | Webhook | Subscription billing | |
 | POST | `/api/v1/auth/forgot-password` | euka-api | Public | Send password reset link | Screen [7.1c](./07_screen_specifications.md) |
