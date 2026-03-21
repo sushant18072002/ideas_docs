@@ -14,7 +14,7 @@
 
 | ID | User Story | Priority | Acceptance Criteria |
 |:---|:---|:---|:---|
-| ADM-03 | As a Data Entry Clerk, I want to paste a MyAnimeList ID and click "Auto-Fill", so the system fetches the Synopsis, Cover Art, and Japanese Title automatically. | P1 | 1. Backend ping to Jikan API (MAL unofficial API). 2. Populates form fields. |
+| ADM-03 | As a Data Entry Clerk, I want to see a "Pending Review" queue of data payloads sent from my Chrome Extension, so I can visually verify scraped HTML data before it goes live. | P1 | 1. Receives POST payloads from extension. 2. Displays visual diffs (Old vs New time). |
 | ADM-04 | As an Admin, I want to manually override any auto-filled data (e.g., fixing a typo in a synopsis), so quality remains perfectly curated. | P1 | 1. Form fields are editable before hitting "Save to Database". |
 | ADM-05 | As an Admin, I want to upload high-res cover art directly from my PC, so I am not reliant on external image URLs breaking. | P1 | 1. File picker widget. 2. Auto-compresses to WebP. 3. Uploads to Cloudflare R2 Assets bucket, saves URL to Supabase. |
 

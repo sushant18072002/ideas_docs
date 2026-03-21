@@ -4,12 +4,12 @@ To maintain a massive schedule without 50 human data entry clerks, the system re
 
 ## 9.1 Background Scrapers (CRON Jobs)
 
-The backend (via Supabase Edge Functions / Deno or a hosted Python server) runs scheduled tasks to keep data fresh.
+The backend relies on event-driven notifications. We explicitly *avoid* automated CRON scrapers for data ingestion to prevent IP bans and CAPTCHA blocks from external sites.
 
-### Job 1: The "MAL/AniList Delta" Fetcher
-*   **Frequency:** Every 12 Hours (2:00 AM, 2:00 PM UTC).
-*   **Action:** Queries external GraphQL APIs for upcoming season data.
-*   **Rule:** It does NOT overwrite existing data. It creates a "Suggested Edits" queue in the Admin Dashboard. If the API states an episode is delayed, the Admin clicks "Accept" to update the master record.
+### Data Ingestion: The Chrome Extension & Staging Queue
+*   **Method:** Manual execution via a custom Chrome Extension.
+*   **Action:** The Admin navigates to `https://anikoto.me/home` or a news site, runs the extension, and the script extracts the HTML DOM elements (Cover URLs, Titles, Air Times).
+*   **Rule:** The extension sends a JSON payload to the Admin Dashboard's `/api/ingest` endpoint. This data enters a "Staging Queue". It is NEVER written directly to the `schedule` table until a human admin clicks "Approve & Sync".
 
 ### Job 2: The "JSON Edge Sync" Cache Builder
 *   **Frequency:** Event-Driven (On PostgreSQL `UPDATE` trigger) OR Fallback Every 1 Hour.

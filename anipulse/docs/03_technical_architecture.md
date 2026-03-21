@@ -7,8 +7,8 @@
 ```mermaid
 graph TD
     subgraph Data Layer
-        A[External APIs: AniList, MAL] -->|Automated Scrapers| B(Supabase PostgreSQL)
-        C[Admin Web Portal] -->|Manual Edits/Curation| B
+        A[Anime Sites: Anikoto, MAL] -->|Chrome Extension Extraction| C[Admin Web Portal: Review Queue]
+        C -->|Manual Approval| B(Supabase PostgreSQL)
     end
 
     subgraph The Edge Proxy (Cloudflare R2)
